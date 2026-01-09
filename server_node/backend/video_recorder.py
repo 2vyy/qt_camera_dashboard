@@ -8,11 +8,11 @@ class VideoRecorder():
         os.makedirs("recordings", exist_ok=True)
         self.fps = 15 # half of camera's fps? idk
 
-    def startRecording(self):
+    def start_recording(self):
         if not self.recording:
             self.recording = True
             self.timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-            self.outputFileName = f"recordings/motion_{self.timestamp}.mp4"
+            self.output_file_name = f"recordings/motion_{self.timestamp}.mp4"
             self.codec = cv2.VideoWriter_fourcc(*'mp4v')
             
             width = config.settings.value("CAMERA_WIDTH", type=int)
@@ -24,25 +24,25 @@ class VideoRecorder():
             if height == 0: height = 480
 
             self.video = cv2.VideoWriter(
-                self.outputFileName, 
+                self.output_file_name, 
                 self.codec, 
                 self.fps,
                 (width, height)
             )
 
             if not self.video.isOpened():
-                print(f"Error: Failed to open video writer for {self.outputFileName}")
+                print(f"Error: Failed to open video writer for {self.output_file_name}")
                 self.recording = False
                 return
     
-    def addFrame(self, frame):
+    def add_frame(self, frame):
         if self.recording and self.video:
             # resize if needed to match writer resolution
             # TODO: should probably initialize writer on first frame
             pass 
             self.video.write(frame)
 
-    def endRecording(self):
+    def end_recording(self):
         if self.recording and self.video:
             self.recording = False
             self.video.release()

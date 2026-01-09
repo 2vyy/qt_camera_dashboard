@@ -30,7 +30,7 @@ class VideoReceiver:
         self.last_processed = None
 
     async def run(self):
-        throttleRate = config.settings.value("FRAME_THROTTLE_RATE", 1)
+        throttle_rate = config.settings.value("FRAME_THROTTLE_RATE", 1)
         while True:
             try:
                 frame: VideoFrame = await self.track.recv()
@@ -46,16 +46,16 @@ class VideoReceiver:
                 
                 if is_recording:
                     if not self.recorder.recording:
-                        self.recorder.startRecording()
-                    self.recorder.addFrame(img)
+                        self.recorder.start_recording()
+                    self.recorder.add_frame(img)
                 else:
                     if self.recorder.recording:
-                        self.recorder.endRecording()
+                        self.recorder.end_recording()
                 
                 if config.settings.value("Raw View", True, type=bool):
                     stream_manager.frame_ready.emit(self.camera_id, img)
                 else:
-                    if self.frame_count % throttleRate == 0:
+                    if self.frame_count % throttle_rate == 0:
                         processed = self.processor.process(img.copy())
                         self.last_processed = processed
                     else:
@@ -66,7 +66,7 @@ class VideoReceiver:
 
             except Exception as e:
                 logger.error(f"Track ended or error for camera {self.camera_id}: {e}")
-                self.recorder.endRecording()
+                self.recorder.end_recording()
                 break
 
 @app.post("/offer")

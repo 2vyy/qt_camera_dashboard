@@ -8,12 +8,12 @@ from server_node.config import settings
 class CameraGrid(QWidget):
     def __init__(self):
         super().__init__()
-        self.cameraLabels = {} # maps camera_id -> QLabel
-        self.gridLayout = QGridLayout()
-        self.setLayout(self.gridLayout)
+        self.camera_labels = {} # maps camera_id -> QLabel
+        self.grid_layout = QGridLayout()
+        self.setLayout(self.grid_layout)
     
-    def addCamera(self, camera_id):
-        if camera_id in self.cameraLabels:
+    def add_camera(self, camera_id):
+        if camera_id in self.camera_labels:
             return # already added
 
         label = QLabel(self)
@@ -21,53 +21,53 @@ class CameraGrid(QWidget):
         label.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Ignored)
         label.setStyleSheet("border: 1px solid gray; background-color: black;")
         
-        self.cameraLabels[camera_id] = label
-        self._arrangeCameras()
+        self.camera_labels[camera_id] = label
+        self._arrange_cameras()
 
-    def _arrangeCameras(self):
+    def _arrange_cameras(self):
         # clear layout (remove from view but don't delete widgets yet)
-        for i in reversed(range(self.gridLayout.count())): 
-            self.gridLayout.itemAt(i).widget().setParent(None)
+        for i in reversed(range(self.grid_layout.count())): 
+            self.grid_layout.itemAt(i).widget().setParent(None)
 
-        camera_ids = sorted(self.cameraLabels.keys())
-        numCameras = len(camera_ids)
-        if numCameras == 0: return
+        camera_ids = sorted(self.camera_labels.keys())
+        num_cameras = len(camera_ids)
+        if num_cameras == 0: return
 
-        cols = int(np.ceil(np.sqrt(numCameras))) # for camera grid layout
+        cols = int(np.ceil(np.sqrt(num_cameras))) # for camera grid layout
         
         for i, cid in enumerate(camera_ids):
-            label = self.cameraLabels[cid]
+            label = self.camera_labels[cid]
             row = i // cols
             col = i % cols
-            self.gridLayout.addWidget(label, row, col)
+            self.grid_layout.addWidget(label, row, col)
     
     @pyqtSlot(int, np.ndarray)
-    def updateImage(self, cameraIndex, frame) -> None:
-        if cameraIndex not in self.cameraLabels:
-            self.addCamera(cameraIndex)
+    def update_image(self, camera_index, frame) -> None:
+        if camera_index not in self.camera_labels:
+            self.add_camera(camera_index)
 
-        rgbFrame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
-        label = self.cameraLabels.get(cameraIndex)
+        label = self.camera_labels.get(camera_index)
         if label:
-            height, width, channels = rgbFrame.shape
-            bytesPerLine = channels * width
+            height, width, channels = rgb_frame.shape
+            bytes_per_line = channels * width
 
-            qtImage = QtGui.QImage(
-                rgbFrame.data, 
+            qt_image = QtGui.QImage(
+                rgb_frame.data, 
                 width, 
                 height, 
-                bytesPerLine, 
+                bytes_per_line, 
                 QtGui.QImage.Format_RGB888
             )
         
-            pixmap = QPixmap.fromImage(qtImage)
-            scaledPixmap = pixmap.scaled(
+            pixmap = QPixmap.fromImage(qt_image)
+            scaled_pixmap = pixmap.scaled(
                 label.size(),
                 Qt.KeepAspectRatio,
                 Qt.SmoothTransformation
             )
-            label.setPixmap(scaledPixmap)
+            label.setPixmap(scaled_pixmap)
 
-    def stopAllThreads(self):
+    def stop_all_threads(self):
         pass # no local threads anymore

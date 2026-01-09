@@ -13,27 +13,29 @@ class App(QWidget):
         self.resize(1200, 700)
         self.show_processed = True
 
-        mainLayout = QVBoxLayout()
-        mainLayout.setContentsMargins(0,0,0,0)
-        mainLayout.setSpacing(0)
+        main_layout = QVBoxLayout()
+        main_layout.setContentsMargins(0,0,0,0)
+        main_layout.setSpacing(0)
 
-        self.controlBar = ControlBar()
-        mainLayout.addWidget(self.controlBar)
+        self.control_bar = ControlBar()
+        main_layout.addWidget(self.control_bar)
 
-        self.cameraGrid = CameraGrid()
-        mainLayout.addWidget(self.cameraGrid, 1)
+        self.camera_grid = CameraGrid()
+        main_layout.addWidget(self.camera_grid, 1)
 
-        self.setLayout(mainLayout)
+        self.setLayout(main_layout)
 
         # Start Signaling Server
-        self.signalingWorker = SignalingServerWorker()
-        self.signalingWorker.start()
+        # Start Signaling Server
+        self.signaling_worker = SignalingServerWorker()
+        self.signaling_worker.start()
 
         # Connect Signals
-        stream_manager.stream_added.connect(self.cameraGrid.addCamera)
-        stream_manager.frame_ready.connect(self.cameraGrid.updateImage)
+        # Connect Signals
+        stream_manager.stream_added.connect(self.camera_grid.add_camera)
+        stream_manager.frame_ready.connect(self.camera_grid.update_image)
 
     def closeEvent(self, event) -> None:
         config.settings.sync()
-        # self.signalingWorker.stop() # TODO: Graceful shutdown of uvicorn
+        # self.signaling_worker.stop() # TODO: Graceful shutdown of uvicorn
         event.accept()
