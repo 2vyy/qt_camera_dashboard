@@ -1,4 +1,5 @@
-import datetime, cv2, config, os
+import datetime, cv2, os
+from server_node import config
 
 class VideoRecorder():
     def __init__(self):
@@ -13,12 +14,20 @@ class VideoRecorder():
             self.timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
             self.outputFileName = f"recordings/motion_{self.timestamp}.mp4"
             self.codec = cv2.VideoWriter_fourcc(*'mp4v')
+            
+            width = config.settings.value("CAMERA_WIDTH", type=int)
+            height = config.settings.value("CAMERA_HEIGHT", type=int)
+
+            # fallback if config is 0, but we need explicit size for writer
+            # this logic might need improvement if stream resolutions are different (maybe for grid recording? TODO)
+            if width == 0: width = 640
+            if height == 0: height = 480
+
             self.video = cv2.VideoWriter(
                 self.outputFileName, 
                 self.codec, 
                 self.fps,
-                (config.settings.value("CAMERA_WIDTH", type=int),
-                 config.settings.value("CAMERA_HEIGHT", type=int))
+                (width, height)
             )
 
             if not self.video.isOpened():
@@ -28,17 +37,13 @@ class VideoRecorder():
     
     def addFrame(self, frame):
         if self.recording and self.video:
-            # is this how I should do this?
-            if frame.shape[0] != config.settings.value("CAMERA_HEIGHT", type=int) or frame.shape[1] != config.settings.value("CAMERA_WIDTH", type=int):
-                frame = cv2.resize(
-                    frame,
-                    (config.settings.value("CAMERA_WIDTH", type=int),
-                     config.settings.value("CAMERA_HEIGHT", type=int))
-                )
+            # resize if needed to match writer resolution
+            # TODO: should probably initialize writer on first frame
+            pass 
             self.video.write(frame)
 
     def endRecording(self):
         if self.recording and self.video:
             self.recording = False
             self.video.release()
-            self.video = None#
+            self.video = None

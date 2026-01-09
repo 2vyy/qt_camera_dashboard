@@ -8,7 +8,7 @@ A desktop-based security monitoring application built with Python, PyQt, and Ope
 - **Customizable UI**: Live-adjustable detection sensitivity, light/dark theme toggle  
 - **Persistent Settings**: Saves user preferences using `QSettings`  
 - **Multi-Threading**: Uses `QThread` to handle concurrent camera streams efficiently
-- 
+
 ## Future Improvements
 - Logging system
 - Notification alerts on motion detection  

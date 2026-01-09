@@ -1,7 +1,7 @@
 from PyQt5.QtCore import Qt, pyqtSignal
 from PyQt5.QtGui import QPalette, QColor
 from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QSpinBox, QHBoxLayout, QScrollArea, QGroupBox, QSizePolicy
-import config
+from server_node import config
 
 class ControlBar(QWidget):
     recordingToggled = pyqtSignal(bool)
@@ -46,7 +46,7 @@ class ControlBar(QWidget):
         self.toggleThemeButton.clicked.connect(self.toggleTheme)
         controlsLayout.addWidget(self.toggleThemeButton)
 
-        self.isRecording = False
+        self.isRecording = config.settings.value("RECORDING_TOGGLE", False, type=bool)
         self.toggleRecordingButton = QPushButton("Start Recording")
         self.toggleRecordingButton.clicked.connect(self.toggleRecording)
         controlsLayout.addWidget(self.toggleRecordingButton)
@@ -112,6 +112,7 @@ class ControlBar(QWidget):
 
     def toggleRecording(self):
         self.isRecording = not self.isRecording
+        config.settings.setValue("RECORDING_TOGGLE", self.isRecording)
         self.recordingToggled.emit(self.isRecording)
         self.updateRecordingButtonText()
 

@@ -1,2 +1,6 @@
-/recordings
-/__pycache__
+recordings
+__pycache__
+README.md
+.gitignore
+camera_node/__pycache__
+server_node/__pycache__
