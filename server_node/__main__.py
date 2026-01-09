@@ -1,6 +1,6 @@
 """Main entry point for the server node application."""
 import sys
-from PyQt5 import QApplication
+from PyQt5.QtWidgets import QApplication
 from server_node.gui.app import App
 
 if __name__ == "__main__":
@@ -20,7 +20,7 @@ if __name__ == "__main__":
 # - seperate video capture into nodes that feed to a shared processing
 # node (server), use WebRTC or smth
 # - add smart bandwidth saving features
-# - use YOLOv8 or MobileNet SSD for object detection, support only 
+# -# use YOLOv8 or MobileNet SSD for object detection, support only
 # searching for movement of certain objects (humans, cars, etc.)
 # - facial recognition and memory
 # - look into Deep SORT for tracking objects
