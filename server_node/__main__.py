@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import QApplication
 from server_node.gui.app import App
 import sys
-
+ 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     window = App()

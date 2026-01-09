@@ -2,7 +2,7 @@ from PyQt5 import QtCore
 
 QtCore.QCoreApplication.setOrganizationName("2vyy")
 QtCore.QCoreApplication.setApplicationName("Camera Vision Project")
-
+ 
 settings = QtCore.QSettings()
 
 settings.setValue("FRAME_THROTTLE_RATE", 1)
