@@ -1,0 +1,8 @@
+aiortc
+aiohttp
+av
+fastapi
+numpy
+opencv-python-headless
+PyQt5
+uvicorn
